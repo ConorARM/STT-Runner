@@ -1,0 +1,7 @@
+.idea/
+download.log
+resources_downloaded/
+Testing/
+cmake-build-*/
+build-*/
+test/resources/audioData.csv
