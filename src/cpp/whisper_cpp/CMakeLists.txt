@@ -21,7 +21,7 @@ set(WHISPER_GIT_URL "https://github.com/ggerganov/whisper.cpp.git"
         CACHE STRING
         "Git URL for Whisper (dependency) repo")
 
-set(WHISPER_GIT_TAG "v1.7.5"
+set(WHISPER_GIT_TAG "v1.8.2"
         CACHE STRING
         "Git commit TAG for whisper.cpp repo")
 

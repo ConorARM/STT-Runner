@@ -114,8 +114,8 @@ public:
                                const int audioDataLength)
     {
 
-        whisper_full(contextPtr, whisperParams, &audioDataPtr[0], audioDataLength);
         whisper_reset_timings(contextPtr);
+        whisper_full(contextPtr, whisperParams, &audioDataPtr[0], audioDataLength);
         whisper_print_timings(contextPtr);
 
         int count = GetTextSegmentCount(contextPtr);
