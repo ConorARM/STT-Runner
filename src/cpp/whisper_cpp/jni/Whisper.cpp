@@ -1,5 +1,5 @@
 //
-// SPDX-FileCopyrightText: Copyright 2024-2025 Arm Limited and/or its affiliates <open-source-office@arm.com>
+// SPDX-FileCopyrightText: Copyright 2024-2026 Arm Limited and/or its affiliates <open-source-office@arm.com>
 //
 // SPDX-License-Identifier: Apache-2.0
 //
@@ -19,7 +19,7 @@ static STT<WhisperImpl> stt;
  * Initialize whisper parameters
  *
  * @param env JNI environment
- * @param jprintRealTime  whether to print partial decoding results in real-time
+ * @param jprintRealtime  whether to print partial decoding results in real-time
  * @param jprintProgress  whether to print progress information
  * @param jtimeStamps     whether to include timestamps in the transcription
  * @param jprintSpecial   whether to include special tokens (e.g., markers) in the output
@@ -31,11 +31,11 @@ static STT<WhisperImpl> stt;
  * @param jsingleSegment  whether to transcribe the entire audio in a single segment
  */
 JNIEXPORT void JNICALL
-Java_com_arm_stt_Whisper_initParams(JNIEnv *env, jobject, jboolean jprintRealtime,
-                                    jboolean jprintProgress, jboolean jtimeStamps,
-                                    jboolean jprintSpecial, jboolean jtranslate,  jstring jlanguage,
-                                    jint jnumThreads, jint joffsetMs, jboolean jnoContext,
-                                    jboolean jsingleSegment)
+Java_com_arm_stt_Whisper_initParams(JNIEnv *env, jobject, const jboolean jprintRealtime,
+                                    const jboolean jprintProgress, const jboolean jtimeStamps,
+                                    const jboolean jprintSpecial, const jboolean jtranslate, jstring jlanguage,
+                                    const jint jnumThreads, const jint joffsetMs, const jboolean jnoContext,
+                                    const jboolean jsingleSegment)
 {
     const char *language_chars = env->GetStringUTFChars(jlanguage, nullptr);
     stt.InitParams(jprintRealtime, jprintProgress, jtimeStamps, jprintSpecial,
@@ -49,16 +49,18 @@ Java_com_arm_stt_Whisper_initParams(JNIEnv *env, jobject, jboolean jprintRealtim
  *
  * @param env JNI environment
  * @param modelPath path to the model file
+ * @param sharedLibraryPath path to the shared libraries
  * @return context
  */
 JNIEXPORT jlong JNICALL Java_com_arm_stt_Whisper_initContext
-  (JNIEnv* env, jobject, jstring modelPath)
+  (JNIEnv* env, jobject, jstring modelPath, jstring sharedLibraryPath)
 {
-      whisper_context *context = nullptr;
-      const char *model_path_chars = env->GetStringUTFChars(modelPath, nullptr);
-      context = stt.InitContext<whisper_context>(model_path_chars);
-      env->ReleaseStringUTFChars(modelPath, model_path_chars);
-      return reinterpret_cast<jlong>(context);
+    const auto sharedLibraryPathNative = env->GetStringUTFChars(sharedLibraryPath, nullptr);
+    const auto modelPathChars = env->GetStringUTFChars(modelPath, nullptr);
+    whisper_context *context = stt.InitContext<whisper_context>(modelPathChars, sharedLibraryPathNative);
+    env->ReleaseStringUTFChars(modelPath, modelPathChars);
+    env->ReleaseStringUTFChars(sharedLibraryPath, sharedLibraryPathNative);
+    return reinterpret_cast<jlong>(context);
 }
 
 /**
@@ -66,7 +68,7 @@ JNIEXPORT jlong JNICALL Java_com_arm_stt_Whisper_initContext
  * @param contextPtr pointer to whisper context
  */
 JNIEXPORT void JNICALL Java_com_arm_stt_Whisper_freeContext
-  (JNIEnv*, jobject, jlong contextPtr)
+  (JNIEnv*, jobject, const jlong contextPtr)
 {
     auto *context = reinterpret_cast<struct whisper_context *>(contextPtr);
     stt.FreeContext<whisper_context>(context);
@@ -80,7 +82,7 @@ JNIEXPORT void JNICALL Java_com_arm_stt_Whisper_freeContext
  * @return full transcription
  */
 JNIEXPORT jstring JNICALL Java_com_arm_stt_Whisper_fullTranscribe
-  (JNIEnv *env, jobject, jlong contextPtr, jfloatArray audioData)
+  (JNIEnv *env, jobject, const jlong contextPtr, jfloatArray audioData)
 {
     auto *context = reinterpret_cast<struct whisper_context *>(contextPtr);
     jfloat *audio_data_arr = env->GetFloatArrayElements(audioData, nullptr);

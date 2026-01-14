@@ -1,5 +1,5 @@
 #
-# SPDX-FileCopyrightText: Copyright 2025 Arm Limited and/or its affiliates <open-source-office@arm.com>
+# SPDX-FileCopyrightText: Copyright 2025-2026 Arm Limited and/or its affiliates <open-source-office@arm.com>
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -21,7 +21,7 @@ set(WHISPER_GIT_URL "https://github.com/ggerganov/whisper.cpp.git"
         CACHE STRING
         "Git URL for Whisper (dependency) repo")
 
-set(WHISPER_GIT_TAG "v1.8.2"
+set(WHISPER_GIT_TAG "v1.8.3"
         CACHE STRING
         "Git commit TAG for whisper.cpp repo")
 
@@ -85,11 +85,11 @@ endforeach()
 FetchContent_Declare(whisper-cpp
     GIT_REPOSITORY  ${WHISPER_GIT_URL}
     GIT_TAG         ${WHISPER_GIT_TAG}
-    GIT_SHALLOW 1 # We only need shallow clone with `--depth=1`
+    GIT_SHALLOW     1 # We only need shallow clone with `--depth=1`
     SOURCE_DIR      ${WHISPER_SRC_DIR}
     )
 
-
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 FetchContent_MakeAvailable(whisper-cpp)
 
 if (NOT TARGET arm-stt-cpp)
@@ -105,15 +105,8 @@ target_include_directories(arm-stt-cpp INTERFACE
 # List all libraries that we need to depend on here:
 target_link_libraries(arm-stt-cpp INTERFACE
     ggml
-    ggml-cpu
     ggml-base
     whisper)
-
-# Set -fPIC for all targets in case it hasn't been.
-set_target_properties(
-    ggml ggml-cpu ggml-base whisper
-    PROPERTIES
-    POSITION_INDEPENDENT_CODE ON)
 
 if(BUILD_JNI_LIB)
     # Make sure JNI include directories have been set.

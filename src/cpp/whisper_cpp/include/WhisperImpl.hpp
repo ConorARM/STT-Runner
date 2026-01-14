@@ -1,5 +1,5 @@
 //
-// SPDX-FileCopyrightText: Copyright 2024-2025 Arm Limited and/or its affiliates <open-source-office@arm.com>
+// SPDX-FileCopyrightText: Copyright 2024-2026 Arm Limited and/or its affiliates <open-source-office@arm.com>
 //
 // SPDX-License-Identifier: Apache-2.0
 //
@@ -78,17 +78,20 @@ public:
         this->whisperParams.offset_ms        = offsetMs;
         this->whisperParams.no_context       = noContext;
         this->whisperParams.single_segment   = singleSegment;
-
     }
 
     /**
     * Function to load the chosen STT model and to init the context
     * @param pathToModel path to the model location
+    * @param sharedLibraryPath path to built shared libs to use
     * @return whisper_context pointer
     */
-    whisper_context* InitContext(const char *pathToModel)
+    whisper_context* InitContext(const char *pathToModel,  const char* sharedLibraryPath)
     {
-        whisper_context *context = whisper_init_from_file_with_params(pathToModel, whisper_context_default_params());
+        ggml_backend_load_all_from_path(sharedLibraryPath);
+        auto params = whisper_context_default_params();
+        params.use_gpu = false;
+        whisper_context *context = whisper_init_from_file_with_params(pathToModel, params);
         return context;
     }
 

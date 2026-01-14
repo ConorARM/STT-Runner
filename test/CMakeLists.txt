@@ -1,5 +1,5 @@
 #
-# SPDX-FileCopyrightText: Copyright 2024-2025 Arm Limited and/or its affiliates <open-source-office@arm.com>
+# SPDX-FileCopyrightText: Copyright 2024-2026 Arm Limited and/or its affiliates <open-source-office@arm.com>
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -14,10 +14,10 @@ set(CATCH_DIR "${CMAKE_CURRENT_BINARY_DIR}" CACHE STRING "Catch2 location")
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
-set(TEST_DATA_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/resources CACHE STRING "Directory with required input data resources")
-set(TEST_MODELS_DIR ${DOWNLOADS_DIR}/models CACHE STRING "Directory with required model resources")
-set(TEST_UTILS_DIR  ${DOWNLOADS_DIR}/test_utils CACHE STRING "Directory with required test utilities jar resources")
-
+set(TEST_DATA_DIR           ${CMAKE_CURRENT_SOURCE_DIR}/resources CACHE STRING "Directory with required input data resources")
+set(TEST_MODELS_DIR         ${DOWNLOADS_DIR}/models CACHE STRING "Directory with required model resources")
+set(TEST_UTILS_DIR          ${DOWNLOADS_DIR}/test_utils CACHE STRING "Directory with required test utilities jar resources")
+set(BACKEND_SHARED_LIB_DIR  ${CMAKE_BINARY_DIR}/bin CACHE STRING "Directory with linked libraries")
 
 if (NOT TARGET arm-stt-cpp)
     message(FATAL_ERROR "stt-cpp-tests requires target arm-stt-cpp")
@@ -35,7 +35,8 @@ include(convert-wav)
 target_compile_definitions(stt-cpp-tests
     PUBLIC
     TEST_MODELS_DIR="${TEST_MODELS_DIR}"
-    TEST_DATA_DIR="${TEST_DATA_DIR}")
+    TEST_DATA_DIR="${TEST_DATA_DIR}"
+    BACKEND_SHARED_LIB_DIR="${BACKEND_SHARED_LIB_DIR}")
 
 # Android specific definition for Catch
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Android")
@@ -98,6 +99,7 @@ if(TARGET arm-stt-jni)
         COMMAND
             ${Java_JAVA_EXECUTABLE}
             -Djava.library.path=${_jniLibPath}
+            -Dbackend.shared.lib.dir=${CMAKE_BINARY_DIR}/bin
             -Dmodel_dir=${TEST_MODELS_DIR}
             -Dtest_data_dir=${TEST_DATA_DIR}
             -cp ${_jarDependenciesTests}:${_jarFile}

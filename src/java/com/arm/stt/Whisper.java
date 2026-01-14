@@ -1,5 +1,5 @@
 //
-// SPDX-FileCopyrightText: Copyright 2024-2025 Arm Limited and/or its affiliates <open-source-office@arm.com>
+// SPDX-FileCopyrightText: Copyright 2024-2026 Arm Limited and/or its affiliates <open-source-office@arm.com>
 //
 // SPDX-License-Identifier: Apache-2.0
 //
@@ -19,10 +19,11 @@ public class Whisper {
     /**
     * Function to load the chosen Whisper model and to init the context
     *
-    * @param  modelPath  path to the file on disk
+    * @param  modelPath            path to the file on disk
+    * @param  sharedLibraryPath    path to the shared libraries
     * @return pointer to the context object
     */
-    public native long initContext(String modelPath);
+    public native long initContext(String modelPath, String sharedLibraryPath);
 
     /**
      * Function to extracts parameters from WhisperConfig object and

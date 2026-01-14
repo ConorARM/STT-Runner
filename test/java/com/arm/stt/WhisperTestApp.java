@@ -1,5 +1,5 @@
 //
-// SPDX-FileCopyrightText: Copyright 2024-2025 Arm Limited and/or its affiliates <open-source-office@arm.com>
+// SPDX-FileCopyrightText: Copyright 2024-2026 Arm Limited and/or its affiliates <open-source-office@arm.com>
 //
 // SPDX-License-Identifier: Apache-2.0
 //
@@ -18,12 +18,15 @@ import java.util.*;
  */
 public class WhisperTestApp {
 
+    private static final String backendSharedLibDir = System.getProperty("backend.shared.lib.dir");
+
     @Test
     public void testInference() {
+
         Whisper whisper = new Whisper();
         String modelPath = System.getProperty("model_dir");
         String testDataPath = System.getProperty("test_data_dir");
-        long context = whisper.initContext(modelPath + "/model.bin");
+        long context = whisper.initContext(modelPath + "/model.bin", backendSharedLibDir);
         float[] audioData = readCSV(testDataPath + "/audioData.csv");
 
         boolean printRealtime=true;

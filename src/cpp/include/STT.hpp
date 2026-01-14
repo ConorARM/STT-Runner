@@ -1,5 +1,5 @@
 //
-// SPDX-FileCopyrightText: Copyright 2024-2025 Arm Limited and/or its affiliates <open-source-office@arm.com>
+// SPDX-FileCopyrightText: Copyright 2024-2026 Arm Limited and/or its affiliates <open-source-office@arm.com>
 //
 // SPDX-License-Identifier: Apache-2.0
 //
@@ -45,12 +45,13 @@ public:
      * Function to load the chosen STT model and to init the context
      * @tparam P stt context type
      * @param pathToModel path to the model location
+     * @param sharedLibraryPath path to location of shared libs
      * @return stt context pointer
      */
     template<typename P>
-    P *InitContext(const char *pathToModel)
+    P *InitContext(const char *pathToModel, const char *sharedLibraryPath )
     {
-        return stt.InitContext(pathToModel);
+        return stt.InitContext(pathToModel, sharedLibraryPath);
     }
 
     /**

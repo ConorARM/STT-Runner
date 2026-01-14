@@ -1,5 +1,5 @@
 <!--
-    SPDX-FileCopyrightText: Copyright 2024-2025 Arm Limited and/or its affiliates <open-source-office@arm.com>
+    SPDX-FileCopyrightText: Copyright 2024-2026 Arm Limited and/or its affiliates <open-source-office@arm.com>
 
     SPDX-License-Identifier: Apache-2.0
 -->
@@ -28,7 +28,7 @@
 
 This repo is designed for building an
 [Arm® KleidiAI™](https://www.arm.com/markets/artificial-intelligence/software/kleidi)
-enabled STT library using CMake build system. It intends to provide an abstraction for [whisper.cpp](https://github.com/ggml-org/whisper.cpp) framework and it has Arm® KleidiAI™ backend available. In future, we **may** add support for other frameworks and models.
+enabled STT library using CMake build system. It intends to provide an abstraction for [whisper.cpp](https://github.com/ggml-org/whisper.cpp) framework, and it has Arm® KleidiAI™ backend available. In future, we **may** add support for other frameworks and models.
 
 The backend library (selected at CMake configuration stage) is wrapped by this project's thin C++ layer that could be used
 directly for testing and evaluations. However, JNI bindings are also provided for developers targeting Android™ based
@@ -37,7 +37,7 @@ applications.
 ## Prerequisites
 
 * CMake 3.27 or above installed
-* Android™ NDK v27.1.12297006  (if building for Android™)
+* Android™ NDK 29.0.14033849  (if building for Android™)
 * Python 3.9 or above installed, python is used to download test resources and models
 * NDK_PATH set to point at the install location of the Android™ NDK
 * aarch64 toolchain (Tested with v11.2-2022.02)
@@ -76,11 +76,13 @@ cmake -B build \
     -DCMAKE_TOOLCHAIN_FILE=${NDK_PATH}/build/cmake/android.toolchain.cmake \
     -DANDROID_ABI=arm64-v8a \
     -DANDROID_PLATFORM=android-33 \
-    -DCMAKE_C_FLAGS=-march=armv8.2a+i8mm+dotprod+fp16 \
-    -DCMAKE_CXX_FLAGS=-march=armv8.2a+i8mm+dotprod+fp16 \
-    -DBUILD_SHARED_LIBS=false \
+    -DGGML_CPU_ALL_VARIANTS=ON \
+    -DGGML_BACKEND_DL=ON \
+    -DGGML_SYSTEM_ARCH=ARM \
+    -DBUILD_SHARED_LIBS=ON \
     -DTEST_DATA_DIR="/data/local/tmp" \
     -DTEST_MODELS_DIR="/data/local/tmp" \
+    -DBACKEND_SHARED_LIB_DIR="/data/local/tmp" \
     -DGGML_OPENMP=OFF
 
 cmake --build ./build
@@ -93,12 +95,14 @@ cmake -B build \
     -DCMAKE_TOOLCHAIN_FILE=${NDK_PATH}/build/cmake/android.toolchain.cmake \
     -DANDROID_ABI=arm64-v8a \
     -DANDROID_PLATFORM=android-33 \
-    -DCMAKE_C_FLAGS=-march=armv8.2a+i8mm+dotprod+fp16 \
-    -DCMAKE_CXX_FLAGS=-march=armv8.2a+i8mm+dotprod+fp16 \
-    -DBUILD_SHARED_LIBS=true \
+    -DGGML_CPU_ALL_VARIANTS=ON \
+    -DGGML_BACKEND_DL=ON \
+    -DGGML_SYSTEM_ARCH=ARM \
+    -DBUILD_SHARED_LIBS=ON \
     -DGGML_CPU_KLEIDIAI=OFF \
     -DTEST_DATA_DIR="/data/local/tmp" \
     -DTEST_MODELS_DIR="/data/local/tmp" \
+    -DBACKEND_SHARED_LIB_DIR="/data/local/tmp" \
     -DGGML_OPENMP=OFF
 
 cmake --build ./build
